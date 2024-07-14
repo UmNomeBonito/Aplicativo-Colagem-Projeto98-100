@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicativo de Colagem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <center>
+        <h1>Aplicativo de Colagem do ENEM</h1>
+<h6> use o navegador chrome para funcionar</h6>
+        <hr>
+        <h4 id="cavalo-1">Assim que o pop-up aparecer, clique em Permitir. Depois diga o comando</h4>
+        <h3>Diga "tirar foto" para tirar suas selfies e fazer a colagem</h3>
+        <button onclick="startRecognition()" class="btn btn-success botao">Iniciar</button>
+        <h4 id="cavalo-2">Clique no botão</h4>
+        <label>📸 Câmera 📷</label>
+        <div id="camera"></div>
+        <h4>Todas as fotos serão exibidas aqui</h4>
+        <div id="result_show">
+            <br>
+            <div id="result1" class="column"><img src="camera_cafe.jpeg" alt="Câmera Café"></div>
+            <br>
+            <div id="result2" class="column"><img src="camera_preta.jpeg" alt="Câmera Preta"></div>
+            <br>
+            <div id="result3" class="column"><img src="camera_rosa.jpg" alt="Câmera Rosa"></div>
+        </div>
+    </center>
+    
+    <div class="rodape">
+        Desenvolvido por Bernardo
+    </div>
+
+    <script>
+        var SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+        var recognition = new SpeechRecognition();
+
+        function startRecognition() {
+            recognition.start();
+        }
+
+        recognition.onresult = function(event) {
+            var content = event.results[0][0].transcript.toLowerCase();
+            if (content === "tirar foto") {
+                speak();
+                setTimeout(take_snapshot, 5000);
+            }
+        };
+
+        recognition.onerror = function(event) {
+            console.error(event.error);
+        };
+
+        var camera = document.getElementById("camera");
+        Webcam.set({
+            width: 500,
+            height: 400,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+
+        function speak() {
+            var synth = window.speechSynthesis;
+            Webcam.attach(camera);
+
+            var speakData = "Tirando sua selfie em 5 segundos";
+            var utterThis = new SpeechSynthesisUtterance(speakData);
+            synth.speak(utterThis);
+        }
+
+        function take_snapshot() {
+            Webcam.snap(function(data_uri) {
+                var img = document.createElement("img");
+                img.src = data_uri;
+                img.style.width = "50%";
+                img.style.borderRadius = "4px";
+                img.style.padding = "10px";
+                img.style.boxShadow = "0 6px 8px 0 rgba(2, 2, 2, 0.2)";
+                document.getElementById('result_show').appendChild(img);
+            });
+        }
+    </script>
+    <style>
+        body {
+            background: #cfcece;
+        }
+
+        h1 {
+            font-family: 'Arial', sans-serif;
+            font-style: normal;
+            font-weight: bold;
+            color: #333;
+        }
+
+        h4 {
+            font-family: 'Verdana', sans-serif;
+            color: #555;
+        }
+
+        #camera {
+            width: 500px;
+            height: 400px;
+            border: 1px solid rgb(87, 2, 2);
+            margin: 20px 0;
+        }
+
+        img {
+            width: 50%;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 6px 8px 0 rgba(2, 2, 2, 0.2);
+            transition: transform 0.2s;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        .column {
+            display: inline-block;
+            padding: 10px;
+        }
+
+        .rodape {
+            position: fixed;
+            color: black;
+            bottom: 0;
+            width: 100%;
+            background-color: gold;
+            line-height: 3;
+            text-align: center;
+        }
+    </style>
+</body>
+
+</html>
